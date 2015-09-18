@@ -293,9 +293,11 @@ public class BSBIndexing {
 			System.out.println("we have find a min ,it is "+count+" wordID:"+wordID+" docID:"+docID);
 			
 			if (finalIndex[wordID] == null) { // a new one
-				if (wordID != 0)
+				if (wordID != 0) {
 				    indexStor(finalIndex[wordID-1]); // count-1 is over,stor it to file;
-				finalIndex[wordID] = new finalIndexHeadNode();
+				    finalIndex[wordID-1] = null; // free the memory
+				}
+			    finalIndex[wordID] = new finalIndexHeadNode();
 				finalIndex[wordID] = inputBuffer[indexMergeNowPoint[count]][count];
 				/*
 				finalIndex[wordID].p = new finalIndexListNode();
@@ -341,7 +343,7 @@ public class BSBIndexing {
 			
 		} // end for while()
 		indexStor(finalIndex[DictNum-1]); // save the last list;
-		
+		finalIndex[DictNum-1] = null; // free the memory
 		for (int i = 0 ; i<inputList.length; i++) {
 			inputList[i].close(); // close all~
 		}
@@ -401,6 +403,8 @@ public class BSBIndexing {
 	
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
+		long time1 = System.currentTimeMillis();
+		
 		BSBIndexing index = new BSBIndexing();
 		dictionarySegmentation CNCut = new dictionarySegmentation ();
 		Stemmer ENCut = new Stemmer ();
@@ -446,7 +450,7 @@ public class BSBIndexing {
 		////////////indexing successful//////////////
 		index.createFinalIndex();
 		System.out.println("final indexing successful~");
-		
+		System.out.println(System.currentTimeMillis() - time1);
 	}
 }
 
