@@ -3,6 +3,7 @@ import java.util.*;
 
 public class BSBIndexing {
     //using BSBI algorithm to create the index for search engine;
+	
 	int PRIME = 45199; // this is a prime.and used for hash function by %;
 	static int DictNum = 0; // the number in the dictionary(hash table) from 0 to DictNum-1
 	HashTableNode [] HashTable = new HashTableNode [PRIME]; // the hash table,at first all is false
@@ -299,36 +300,22 @@ public class BSBIndexing {
 				}
 			    finalIndex[wordID] = new finalIndexHeadNode();
 				finalIndex[wordID] = inputBuffer[indexMergeNowPoint[count]][count];
-				/*
-				finalIndex[wordID].p = new finalIndexListNode();
-				finalIndex[wordID].wordID = wordID;
-				finalIndex[wordID].docFrequent = inputBuffer[indexMergeNowPoint[count]][count].docFrequent;
-				finalIndex[wordID].last = finalIndex[wordID].p;
-				finalIndex[wordID].wordAllFrequent = inputBuffer[indexMergeNowPoint[count]][count].wordAllFrequent;
-				finalIndex[wordID].p.next = null;
-				finalIndex[wordID].p.wordDocFrequent = inputBuffer[indexMergeNowPoint[count]][count].p.wordDocFrequent;
-				finalIndex[wordID].p.docID = inputBuffer[indexMergeNowPoint[count]][count].p.docID;
-				*/
+				
 			}
 			else { // wordID already existence
 				finalIndex[wordID].docFrequent += inputBuffer[indexMergeNowPoint[count]][count].docFrequent;
 				finalIndex[wordID].wordAllFrequent += inputBuffer[indexMergeNowPoint[count]][count].wordAllFrequent;
 				finalIndex[wordID].last.next = inputBuffer[indexMergeNowPoint[count]][count].p;
 				finalIndex[wordID].last = inputBuffer[indexMergeNowPoint[count]][count].last;
-				/*
-				finalIndex[wordID].last.next = new finalIndexListNode();
-				finalIndex[wordID].last = finalIndex[wordID].last.next;
-				finalIndex[wordID].last.next = null;
-				finalIndex[wordID].last.docID = inputBuffer[indexMergeNowPoint[count]][count].p.docID;
-				finalIndex[wordID].last.wordDocFrequent = inputBuffer[indexMergeNowPoint[count]][count].p.wordDocFrequent;
-				*/
+				
 			}
+			
 			indexMergeNowPoint[count]++;
 			
 			if (indexMergeNowPoint[count] == indexMergeNowSize[count]) { // buffer is empty
-				System.out.println("try read");
+				//System.out.println("try read");
 				if (inputBufferMaxSize == indexMergeNowSize[count]) { // file not empty
-					System.out.println("buffer read!");
+					//System.out.println("buffer read!");
 					indexMergeNowPoint[count] = 0;
 					indexMergeNowSize[count] = 0;
 					bufferRead(count, inputBuffer,inputList, fileEmpty, inputBufferMaxSize, indexMergeNowPoint, indexMergeNowSize);
@@ -359,6 +346,7 @@ public class BSBIndexing {
 		}
 		output.close();
 	}
+	
 	public boolean sizeAllZero (int [] indexMergeNowSize) {
 		for (int i = 0 ; i<indexMergeNowSize.length; i++) {
 			if (indexMergeNowSize[i] != 0 )
@@ -368,12 +356,10 @@ public class BSBIndexing {
 	}
 	
 	public void bufferRead (int i, finalIndexHeadNode [][] inputBuffer,Scanner [] inputList, boolean [] fileEmpty, int inputBufferMaxSize, int [] indexMergeNowPoint, int [] indexMergeNowSize) {
-		if (fileEmpty[i] ) {System.out.println("~!@#$^&~!@#%^&~!@#$%^~@#%^~!@#%^");return;}
+		//if (fileEmpty[i] ) {System.out.println("~!@#$^&~!@#%^&~!@#$%^~@#%^~!@#%^");return;}
 		while (inputList[i].hasNext() && indexMergeNowSize[i]<inputBufferMaxSize) {
 			inputBuffer[indexMergeNowSize[i]][i] = new finalIndexHeadNode();
-			//System.out.println(inputList[i].nextLine());
-			//System.out.println(inputList[i].nextLine());
-			//System.out.println(inputList[i].nextLine());
+			
 			inputBuffer[indexMergeNowSize[i]][i].wordID = inputList[i].nextInt();
 			int docFrequent = inputList[i].nextInt();
 			inputBuffer[indexMergeNowSize[i]][i].docFrequent = docFrequent;
@@ -391,7 +377,6 @@ public class BSBIndexing {
 				inputBuffer[indexMergeNowSize[i]][i].last.wordDocFrequent = inputList[i].nextInt();
 			}
 			
-			//inputBuffer[indexMergeNowSize[i]][i].last = null; // no use the last at here
 			///////////////////////////
 			indexMergeNowSize[i]++;
 		}
@@ -400,6 +385,8 @@ public class BSBIndexing {
 		}
 		
 	}
+	
+
 	
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
@@ -415,7 +402,8 @@ public class BSBIndexing {
 		String [] targetFileList = targetFileFolder.list();
 		File nowTargetFile;
 		Scanner input;
-		//FileUtils.cleanDirectory(targetFileAddress);
+		
+		
 		deleteOldTempIndex();
 		for (int i = 0 ; i<targetFileList.length; i++) {
 			System.out.println(targetFileList[i]);
@@ -436,9 +424,11 @@ public class BSBIndexing {
 		    	System.out.println("-----Doc is too bigger! This Doc will be ignore!-----\n\n");
 		    else {
 		    	if (index.notEnoughMemory(keyWordList)) 	    
-		    	    index.indexing();
+		    	    index.indexing(); // flush
 		        for (int j = 0 ; j<keyWordList.length; j++) 
-		    	    index.createWordIDdocIDArrayList(keyWordList[j], Integer.parseInt(new StringBuffer(targetFileList[i]).substring(0, 8).toString()));;
+		    	    index.createWordIDdocIDArrayList(keyWordList[j], 
+		    	    		Integer.parseInt(
+		    	    				new StringBuffer(targetFileList[i]).substring(0, 8).toString()));;
 		        System.out.println("-----Doc has been indexing-----\n\n");
 		    }
 		}
